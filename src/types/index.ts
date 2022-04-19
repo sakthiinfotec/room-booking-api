@@ -8,3 +8,8 @@ export interface SlotsCountByRoom {
   roomId: number;
   slotsCount: number;
 }
+
+export interface ErrorType {
+  status: number;
+  error: string;
+}

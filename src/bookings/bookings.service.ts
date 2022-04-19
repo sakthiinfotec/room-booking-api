@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { RoomsService } from './../rooms/rooms.service';
 import { SlotsService } from 'src/slots/slots.service';
-import { BookRoomDTO, SlotsCountByRoom } from 'src/types';
+import { BookRoomDTO, ErrorType, SlotsCountByRoom } from 'src/types';
 import { Booking } from './booking.entity';
 import { Room } from 'src/rooms/room.entity';
 
@@ -31,28 +31,23 @@ export class BookingsService {
       this.slotsService.findAvailableSlots(roomId),
     ]);
 
+    const errorResp: ErrorType = {
+      status: HttpStatus.FORBIDDEN,
+      error: `Room ${roomId} not available for booking`,
+    };
+
     if (!availableRooms.find((room) => room.id === roomId)) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: `Room ${roomId} not available for booking`,
-        },
-        HttpStatus.FORBIDDEN,
-      );
+      throw new HttpException(errorResp, HttpStatus.FORBIDDEN);
     }
 
     for (const slotId of booking.slots) {
       if (!availableSlots.find((slot) => slot.id === slotId)) {
-        throw new HttpException(
-          {
-            status: HttpStatus.FORBIDDEN,
-            error: `Slot ${slotId} out of [${booking.slots}] is not available for booking`,
-          },
-          HttpStatus.FORBIDDEN,
-        );
+        const error = `Slot ${slotId} out of [${booking.slots}] is not available for booking`;
+        throw new HttpException({ ...errorResp, error }, HttpStatus.FORBIDDEN);
       }
     }
 
+    // Create booking entity instance for each selected slots and save array of booking entity
     const bookingArr = booking.slots.map((slotId) =>
       this.bookingRepository.create({
         userId,
