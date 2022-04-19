@@ -31,6 +31,16 @@ export class BookingsService {
       this.slotsService.findAvailableSlots(roomId),
     ]);
 
+    if (!availableRooms.find((room) => room.id === roomId)) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: `Room ${roomId} not available for booking`,
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     for (const slotId of booking.slots) {
       if (!availableSlots.find((slot) => slot.id === slotId)) {
         throw new HttpException(
@@ -41,16 +51,6 @@ export class BookingsService {
           HttpStatus.FORBIDDEN,
         );
       }
-    }
-
-    if (!availableRooms.find((room) => room.id === roomId)) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: `Room ${roomId} not available for booking`,
-        },
-        HttpStatus.FORBIDDEN,
-      );
     }
 
     const bookingArr = booking.slots.map((slotId) =>
