@@ -1,4 +1,3 @@
-import { BookRoomDTO } from './../dto/bookroom.dto';
 import {
   Controller,
   Get,
@@ -9,9 +8,11 @@ import {
   Param,
   Sse,
   MessageEvent,
+  HttpException,
 } from '@nestjs/common';
 import { interval, map, Observable } from 'rxjs';
-import Booking from './booking.entity';
+import { Booking } from './booking.entity';
+import { BookRoomDTO } from '../types';
 import { BookingsService } from './bookings.service';
 
 @Controller('bookings')
@@ -29,7 +30,7 @@ export class BookingsController {
   }
 
   @Post()
-  create(@Body() bookingData: BookRoomDTO): Promise<Booking[]> {
+  create(@Body() bookingData: BookRoomDTO): Promise<Booking[] | HttpException> {
     return this.bookingService.create(bookingData);
   }
 

@@ -43,20 +43,4 @@ export class RoomsService {
   async delete(id: number): Promise<DeleteResult> {
     return await this.roomRepository.delete(id);
   }
-
-  async findAvailableRooms(): Promise<Room[]> {
-    const usedRoomsQB = this.roomRepository.manager
-      .createQueryBuilder(Room, 'room')
-      .select('room.id')
-      .leftJoin('room.bookings', 'booking')
-      .where('booking.cancelled = :cancelled', { cancelled: false });
-
-    const availRoomsQB = this.roomRepository.manager
-      .createQueryBuilder(Room, 'room')
-      .select('room.id')
-      .where('room.id NOT IN (' + usedRoomsQB.getQuery() + ')')
-      .setParameters(usedRoomsQB.getParameters());
-
-    return await availRoomsQB.getMany();
-  }
 }

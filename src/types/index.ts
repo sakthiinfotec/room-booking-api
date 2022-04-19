@@ -3,3 +3,8 @@ export interface BookRoomDTO {
   roomId: number;
   slots: number[];
 }
+
+export interface SlotsCountByRoom {
+  roomId: number;
+  slotsCount: number;
+}

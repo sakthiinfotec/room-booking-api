@@ -8,11 +8,15 @@ import {
   Param,
 } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
+import { BookingsService } from 'src/bookings/bookings.service';
 import { Room } from './room.entity';
 
 @Controller('rooms')
 export class RoomsController {
-  constructor(private roomsService: RoomsService) { }
+  constructor(
+    private roomsService: RoomsService,
+    private bookingService: BookingsService,
+  ) { }
 
   @Post('load')
   load(@Body() rooms: Room[]): Promise<any> {
@@ -42,7 +46,7 @@ export class RoomsController {
   }
 
   @Get('available')
-  available(): Promise<Room[]> {
-    return this.roomsService.findAvailableRooms();
+  async availableRooms(): Promise<Room[]> {
+    return this.bookingService.findAvailableRooms();
   }
 }

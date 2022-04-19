@@ -11,7 +11,7 @@ import { Room } from 'src/rooms/room.entity';
 import { Slot } from 'src/slots/slot.entity';
 
 @Entity()
-export default class Booking {
+export class Booking {
   @PrimaryGeneratedColumn()
   id: number;
 
