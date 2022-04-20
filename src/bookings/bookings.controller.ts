@@ -19,11 +19,6 @@ import { BookingsService } from './bookings.service';
 export class BookingsController {
   constructor(private bookingService: BookingsService) { }
 
-  @Sse('sse')
-  sse(): Observable<MessageEvent> {
-    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } })));
-  }
-
   @Get()
   list(): Promise<Booking[]> {
     return this.bookingService.findAllBookings();
