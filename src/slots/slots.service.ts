@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Slot } from './slot.entity';
 
 @Injectable()
@@ -15,13 +15,9 @@ export class SlotsService {
    * @param slots Aarray of string of time slots
    * @returns List of loaded Ids
    */
-  async load(slots: Slot[]): Promise<InsertResult> {
-    return await this.slotRepository.manager
-      .createQueryBuilder()
-      .insert()
-      .into(Slot)
-      .values(slots)
-      .execute();
+  async load(slots: Slot[]): Promise<Slot[]> {
+    const slotList = slots.map((slot) => this.slotRepository.create(slot));
+    return await this.slotRepository.save(slotList);
   }
 
   /**

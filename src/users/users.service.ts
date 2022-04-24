@@ -10,6 +10,16 @@ export default class UsersService {
     private userRepository: Repository<User>,
   ) { }
 
+  /**
+   * Bulk load list of users
+   * @param users Users
+   * @returns List of loaded Ids
+   */
+  async load(users: User[]): Promise<User[]> {
+    const userList = users.map((user) => this.userRepository.create(user));
+    return await this.userRepository.save(userList);
+  }
+
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }

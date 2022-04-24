@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Room } from './room.entity';
 
 @Injectable()
@@ -15,13 +15,9 @@ export class RoomsService {
    * @param rooms Array of string of rooms
    * @returns List of loaded Ids
    */
-  async load(rooms: Room[]): Promise<InsertResult> {
-    return await this.roomRepository.manager
-      .createQueryBuilder()
-      .insert()
-      .into(Room)
-      .values(rooms)
-      .execute();
+  async load(rooms: Room[]): Promise<Room[]> {
+    const roomList = rooms.map((room) => this.roomRepository.create(room));
+    return await this.roomRepository.save(roomList);
   }
 
   /**

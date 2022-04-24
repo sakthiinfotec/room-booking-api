@@ -14,6 +14,11 @@ import UserService from './users.service';
 export class UsersController {
   constructor(private usersService: UserService) { }
 
+  @Post('load')
+  load(@Body() users: User[]): Promise<User[]> {
+    return this.usersService.load(users);
+  }
+
   @Get()
   list(): Promise<User[]> {
     return this.usersService.findAll();
